@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. FONDO GLOBAL ANIMADO --- */
+        /* Al ponerlo aquí, se aplica a TODAS las páginas automáticamente */
+        body {
+            background: linear-gradient(-45deg, #000000, #240036, #4a148c, #0d001a);
+            background-size: 400% 400%;
+            min-height: 100vh;
+            color: #ffffff !important;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* --- 2. NAVBAR TRANSPARENTE --- */
+        .navbar {
+            background-color: transparent !important; /* Totalmente transparente */
+        }
+
+        /* Enlaces normales del menú */
+        .navbar-nav .nav-link {
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.7) !important;
+            font-weight: 500;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #ffffff !important;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Enlace "Registrarse" (Texto morado neón, SIN FONDO) */
+        .nav-link-register {
+            color: #d500f9 !important;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .nav-link-register:hover {
+            color: #ea80fc !important;
+            text-shadow: 0 0 15px rgba(213, 0, 249, 0.8) !important;
+            background: transparent !important;
+        }
+
+        /* Enlace "Salir" (Texto rojo suave, SIN FONDO) */
+        .nav-link-logout {
+            color: #ff8a80 !important;
+            margin-left: 10px;
+        }
+        .nav-link-logout:hover {
+            color: #ff5252 !important;
+            text-shadow: 0 0 10px rgba(255, 82, 82, 0.6) !important;
+            background: transparent !important;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}" style="font-family: 'Cinzel', serif; letter-spacing: 2px; font-size: 1.5rem;">
+                ✨ Aura
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">Inicio</a>
+                    </li>
+                    
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('dashboard') }}">Panel</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-logout" href="{{ url_for('logout') }}">Salir</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-register" href="{{ url_for('register') }}">Registrarse</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
